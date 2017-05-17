@@ -284,6 +284,7 @@ return (x + y);
 }
 */
 /* 传递结构地址 */
+/*
 #include <stdio.h>
 
 #define FUNDLEN  50
@@ -315,3 +316,261 @@ double sum(const struct funds * money)
 {
 	return(money->bankfund + money->savefund);
 }
+*/
+/* 传递结构指针示例 */
+/*
+#include<stdio.h>
+#include<string.h>
+
+#define LEN  30
+struct name
+{
+	char first[LEN];
+	char last[LEN];
+	int  letters;
+};
+
+void getinfo(struct name *);
+void makeinfo(struct name *);
+void showinfo(const struct name *);
+char * s_gets(char * st, int n);
+
+int main(void)
+{
+	struct name chris;
+
+	getinfo(&chris);
+	makeinfo(&chris);
+	showinfo(&chris);
+
+	return 0;
+}
+
+void getinfo(struct name * pst)
+{
+	printf_s("Plese enter your first name.\n");
+	s_gets(pst->first, LEN);  // or s_gets((*pst).first, LEN);
+	printf_s("Please enter your last name.\n");
+	s_gets(pst->last, LEN);
+}
+
+void showinfo(const struct name * pst)
+{
+	printf_s("%s %s, your name contains %d letters.\n",
+			 pst->first, pst->last, pst->letters);
+}
+
+void makeinfo(struct name * pst)  // 注意结构体函数定义
+{
+	pst->letters = strlen(pst->first) + strlen(pst->last);
+}
+
+char * s_gets(char * st, int n)
+{
+	char * ret_val;
+	char * find;
+
+	ret_val = fgets(st, n, stdin);
+	if (ret_val)
+	{
+		find = strchr(st,'\n');
+		if (find)
+			*find = '\0';
+		else
+			while (getchar() != '\n')
+				continue;
+	}
+
+	return ret_val;
+}
+*/
+/* 传递结构示例 */
+/*
+#include<stdio.h>
+#include<string.h>
+
+#define LEN 30
+
+struct name
+{	
+	char first[LEN];
+	char last[LEN];
+	int letters;
+};
+
+struct name getinfo(void);
+struct name makeinfo(struct name );
+void showinfo(struct name);
+char * s_gets(char *ct, int n);
+
+
+int main(void)
+{
+	struct name person;
+
+	person = getinfo();
+	person = makeinfo(person);
+	showinfo(person);
+
+	return 0;
+}
+
+struct name getinfo(void)  // 获取信息，有返回值
+{
+	struct name temp;
+	printf_s("Please enter your first name.\n");
+	s_gets(temp.first, LEN);
+	printf_s("Please enter your last name.\n");
+	s_gets(temp.last, LEN);
+
+	return temp;
+}
+
+struct name makeinfo(struct name info)  // 计算字母个数，注意有返回值
+{
+	info.letters = strlen(info.first) + strlen(info.last);
+
+	return info;
+}
+
+void showinfo(struct name info)
+{
+	printf("%s %s %d", info.first, info.last, info.letters);
+
+}
+
+char * s_gets(char *ct, int n)
+{
+	char * ret_val;
+	char * find;
+
+	ret_val = fgets(ct, n ,stdin);  //  读取输入行
+	if (ret_val)
+	{
+		find = strchr(ct, '\n');  // 查找换行符
+		if (find)
+			*find = '\0';  // 将换行符替换为 \0 
+		else 
+			while (getchar() != '\n')  // 处理输入行剩余部分
+				continue;
+	}
+
+	return ret_val;
+}
+*/
+/* 使用指针和malloc()示例 */
+/*
+#include<stdio.h>
+#include<string.h>  // 提供strlen()和strcpy()原型
+#include<stdlib.h>  // 提供malloc()和free()原型
+
+#define SLEN  81
+
+struct name 
+{
+	char * first;
+	char * last;
+	int lettlers;
+};
+
+void getinfo(struct name * ct);
+void makeinfo(struct name * ct);
+void showinfo(const struct name * ct);
+void cleanup(struct name * ct);
+char * s_gets(char *ct, int n);
+
+int main(void)
+{
+	struct name person;
+
+	getinfo(&person);
+	makeinfo(&person);
+	showinfo(&person);
+	cleanup(&person);
+
+	return 0;
+}
+
+void getinfo(struct name * ct)
+{
+	char temp[SLEN];
+
+	printf_s("Please enter your first name.\n");
+	s_gets(temp, SLEN);
+	ct->first = (char *) malloc(strlen(temp) + 1);  // 分配动态内存，注意+1（留给'\0'）
+	strcpy_s(ct->first, strlen(temp) + 1, temp);  // 拷贝字符串,使用strcpy_s
+	printf_s("Please enter your last name.\n");
+	s_gets(temp, SLEN);
+	ct->last = (char *)malloc(strlen(temp) + 1);
+	strcpy_s(ct->last, strlen(temp) + 1, temp);  // 拷贝字符串,使用strcpy_s
+
+}
+
+void makeinfo(struct name * ct)
+{
+	ct->lettlers = strlen(ct->first) + strlen(ct->last);
+}
+
+void showinfo(const struct name * ct)
+{
+	printf("%s %s %d", ct->first, ct->last, ct->lettlers);
+}
+
+void cleanup(struct name * ct)
+{
+	free(ct->first);  // 释放内存
+	free(ct->last);
+}
+
+char * s_gets(char *ct, int n)
+{
+	char * ret_val;
+	char * find;
+
+	ret_val = fgets(ct, n, stdin);
+	if (ret_val)
+	{
+		find = strchr(ct, '\n');
+		if (find)
+			*find = '\0';
+		else
+			while (getchar() != '\n')  // 处理剩余输入行
+				continue;
+	}
+
+	return ret_val;
+}
+*/
+
+/* 复合字面量示例 */
+#include<stdio.h>
+
+#define MAXTITL  41
+#define MAXAUTL  31
+
+struct book
+{
+	char title[MAXTITL];
+	char author[MAXAUTL];
+	float value;
+};
+
+int main(void)
+{
+	struct book readfirst;
+	int score;
+
+	printf_s("Enter your test score:");
+	scanf_s("%d", &score);
+
+	if (score >= 84)
+		readfirst = (struct book){ "you", "i", 123 };
+	else
+		readfirst = (struct book){ "he", "you", 212 };
+	printf("%s %s %.2lf", readfirst.title, readfirst.author, readfirst.value);
+
+	return 0;
+}
+
+
+
