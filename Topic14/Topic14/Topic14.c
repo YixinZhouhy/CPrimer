@@ -541,8 +541,8 @@ char * s_gets(char *ct, int n)
 	return ret_val;
 }
 */
-
 /* 复合字面量示例 */
+/*
 #include<stdio.h>
 
 #define MAXTITL  41
@@ -571,6 +571,162 @@ int main(void)
 
 	return 0;
 }
+*/
+/* 结构数组函数示例 */
+/*
+#include<stdio.h>
+
+#define FUNDLEN  50
+#define N  2
+
+struct funds
+{
+	char    bank[FUNDLEN];
+	double  bankfund;
+	char    save[FUNDLEN];
+	double  savefund;
+};
+
+double sum(const struct funds  money[], int n);
+
+int main(void)
+{	
+	struct funds jones[N] = 
+	{
+		{
+			"China Bank",
+			123,
+			"save",
+			321
+		},
+		{
+			"bank",
+			234,
+			"loan",
+			13
+
+		}
+	};
+	printf_s("%.2lf", sum(jones, N));
+
+	return 0;
+}
+double sum(const struct funds  money[], int n)
+{
+	double total;
+	int i;
+
+	for (i = 0, total = 0; i < n; i++)
+		total += money[i].bankfund + money[i].savefund;
+
+	return total;
+}
+*/
+
+/* 保存结构示例 meikan*/
+/*
+#include<stdio.h>
+#include<stdlib.h>  // 提供strchr() 原型
+#include<string.h>  
+
+#define MAXTITL  40  // 书名字符最大值
+#define MAXAUTH  40  // 作者名字字符最大值
+#define MAXBKS	 10  // 最大书籍数量
+
+char * s_gets(char * ct, int n);
+
+struct book 
+{
+	char  title[MAXTITL];
+	char  author[MAXAUTH];
+	float value;
+};
+
+int main(void)
+{
+	struct book library[MAXBKS];
+	int count = 0;
+	int index, filecount;
+	FILE * pbooks;
+	int size = sizeof(struct book);
+
+	if ((pbooks = fopen_s("book.dat", "a + b")) == NULL)
+	{
+		fputs("can't open book.dat file\n",stderr);
+		exit(1);
+	}
+	rewind(pbooks);  // 定位到文件开始
+	// 打印结构数组信息
+	while (count < MAXBKS && fread(&library[count], 
+		   size, 1, pbooks)  == 1)
+	{
+		if (count == 0)
+			puts("Current contents of book.dat:");
+		printf_s("%s by %s : $%.2f.\n", library[count].title, 
+										library[count].author,
+										library[count].value);
+		count++;
+	}
+	filecount = count;
+	if (count == MAXBKS)
+	{
+		fputs("The book.dat file is full.", stderr);
+		exit(2);
+	}
+	puts("Please add new book titles.");
+	puts("Press [enter] at the start of a line to stop");
+	while (count < MAXBKS && s_gets(library[count].title, MAXTITL) != NULL
+		   && library[count].title[0] != '\0')
+	{
+		puts("Now enter the author.");
+		s_gets(library[count].author, MAXAUTH);
+		puts("Now enter the value.");
+		scanf_s("%f", &library[count++].value);  // 注意count++
+		while (getchar() != '\n')
+			continue;
+		if (count < MAXBKS)
+			puts("Enter the next title.");
+	}
+	if (count > 0)
+	{
+		puts("Here is the list of your books:");
+		for (index = 0; index < count; index++)
+			printf_s("%s by %s ； %.2f\n", library[index].title,
+			library[index].author,
+			library[index].value);
+		fwrite(&library[filecount], size, count - filecount, pbooks);
+	}
+	else
+		puts("No books.Bye");
+	fclose(pbooks);
 
 
+	return 0;
+}
 
+char * s_gets(char * ct, int n)
+{
+	char * ret_val;
+	char * find;
+
+	ret_val = fgets(ct, n, stdin);
+	if (ret_val)
+	{
+		find = strchr(ct, '\n');
+		if (find)
+			*find = '\0';
+		else
+			while (getchar() != '\n')  // 输入剩余输入行
+				continue;
+	}
+
+	return ret_val;
+}
+*/
+
+
+#include<stdio.h>
+int main(void)
+{
+	
+}
